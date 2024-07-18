@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>OpenAI Models Analysis</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                margin: 0;
+                padding: 20px;
+                background-color: #f4f4f4;
+            }
+            .container {
+                max-width: 800px;
+                margin: auto;
+                background: white;
+                padding: 20px;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            h1 {
+                color: #333;
+            }
+            label {
+                display: block;
+                margin-bottom: 5px;
+            }
+            textarea, input[type="text"] {
+                width: 100%;
+                padding: 8px;
+                margin-bottom: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+            button {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color: #45a049;
+            }
+            #result {
+                margin-top: 20px;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>OpenAI Models Analysis</h1>
+            <form id="analysisForm">
+                <label for="question">Question:</label>
+                <textarea id="question" rows="10" required></textarea>
+                
+                <label for="token">AIPROXY_TOKEN:</label>
+                <input type="text" id="token" required>
+                
+                <button type="submit">Analyze</button>
+            </form>
+            <div id="result"></div>
+        </div>
+
+        <script>
+            document.getElementById('analysisForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const question = document.getElementById('question').value;
+                const token = document.getElementById('token').value;
+                const resultDiv = document.getElementById('result');
+                
+                resultDiv.textContent = 'Analyzing...';
+                
+                fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question, token }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        resultDiv.textContent = 'Error: ' + data.error;
+                    } else {
+                        resultDiv.textContent = 'Total points: ' + data.points;
+                    }
+                })
+                .catch(error => {
+                    resultDiv.textContent = 'Error: ' + error.message;
+                });
+            });
+        </script>
+    </body>
+    </html>
